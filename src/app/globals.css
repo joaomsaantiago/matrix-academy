@@ -1,0 +1,90 @@
+@import "tailwindcss";
+
+/*
+ * Direção visual: "um motivo" (one motif).
+ * O motivo é o slot do fader da Matrix: uma trilha vertical em forma de cápsula.
+ * As cores vêm do próprio produto: grafite do chassi, ciano da tela, branco do fundo das fotos.
+ */
+:root {
+  --ground: #050607; /* preto */
+  --surface: #12151a;
+  --surface-hi: #1e2329;
+  --ink: #f1f3f4;
+  --ink-soft: #a7afb5;
+  --accent: #4aa8d8; /* o ciano da tela da Matrix */
+  --accent-ink: #050607;
+  --field: #0d2c40; /* painel azul profundo (instrutor) */
+  --field-ink: #f1f3f4;
+  --track: #252b31;
+  --danger: #ff8a7a;
+  --ok: #7fd6a0;
+
+  /* uma só margem lateral em todos os tamanhos de tela */
+  --margin: clamp(20px, 5vw, 72px);
+
+  /* cinco degraus de tipo */
+  --step-small: clamp(0.875rem, 0.85rem + 0.1vw, 0.9375rem);
+  --step-body: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+  --step-lead: clamp(1.25rem, 1.1rem + 0.7vw, 1.625rem);
+  --step-head: clamp(2rem, 1.3rem + 3.2vw, 4rem);
+  --step-display: clamp(2.75rem, 5.3vw, 5.5rem);
+
+  --tint-1: #1e2329;
+  --tint-2: #1d4f6e;
+  --tint-3: #4aa8d8;
+  --tint-4: #8fcbea;
+  --tint-5: #c9e6f5;
+
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-ground: var(--ground);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-danger: var(--danger);
+  --color-ok: var(--ok);
+  --font-sans: var(--font-text);
+}
+
+body {
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--font-text), system-ui, sans-serif;
+  font-size: var(--step-body);
+  line-height: 1.5;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 0.92;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 3px;
+}
+
+/* Se o JavaScript falhar, nenhum conteúdo fica escondido. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
