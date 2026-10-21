@@ -1930,22 +1930,12 @@ html[data-refract] .mcard {
   align-items: center;
   margin-top: clamp(48px, 9svh, 100px);
 }
+/* crachá pendurado (react-bits Lanyard): o canvas ocupa a coluna e deixa o crachá balançar */
 .teacher__portrait {
   position: relative;
-  display: grid;
-  place-items: center;
-  width: min(100%, 420px);
-  aspect-ratio: 4 / 5;
-  border-radius: 999px;
-  background: var(--accent);
-  color: var(--accent-ink);
-  overflow: hidden;
-}
-.teacher__portrait span {
-  font-family: var(--font-brand), system-ui, sans-serif;
-  font-weight: 900;
-  font-size: clamp(4rem, 9vw, 8rem);
-  letter-spacing: 0.04em;
+  width: 100%;
+  height: clamp(520px, 70svh, 700px);
+  margin-top: -40px; /* a fita sobe até o título */
 }
 .teacher__body {
   display: flex;
@@ -1982,7 +1972,8 @@ html[data-refract] .mcard {
     align-items: start;
   }
   .teacher__portrait {
-    width: min(70%, 300px);
+    height: 520px;
+    margin-top: 0;
   }
   .teacher__text {
     font-size: var(--step-body);

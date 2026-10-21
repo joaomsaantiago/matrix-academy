@@ -1,4 +1,6 @@
-/** O seu professor. A foto do Thiago ainda vai chegar: o retrato é um espaço reservado com as iniciais. */
+import Lanyard from "@/components/Lanyard";
+
+/** O seu professor. O crachá pendurado (Lanyard) usa imagens geradas com as iniciais; troque por uma foto do Thiago quando chegar. */
 export function Instructor() {
   return (
     <section id="quem-ensina" className="teacher" aria-labelledby="quem-ensina-title">
@@ -12,8 +14,18 @@ export function Instructor() {
       </h2>
 
       <div className="teacher__grid">
-        <div className="teacher__portrait" aria-hidden="true" data-reveal>
-          <span>TS</span>
+        <div className="teacher__portrait" data-reveal="left">
+          <Lanyard
+            frontImage="/img/cracha/frente.webp"
+            backImage="/img/cracha/verso.webp"
+            cardColor="#0d1317"
+            strapColor="#4aa8d8"
+            strapWidth={0.5}
+            size={0.62}
+            strapLength={0.55}
+            metal="silver"
+            finish="glossy"
+          />
         </div>
 
         <div className="teacher__body">
