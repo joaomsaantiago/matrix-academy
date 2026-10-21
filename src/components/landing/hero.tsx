@@ -1,8 +1,9 @@
 ﻿import { CreateAccountButton, HeroSpotlight } from "./hero-effects";
+import { HeroScrollVideo } from "./hero-scroll-video";
 
 export function Hero() {
   return (
-    <section className="hero" aria-label="Apresentação">
+    <HeroScrollVideo>
       <div className="hero__glow" aria-hidden="true" />
       <HeroSpotlight />
 
@@ -11,7 +12,7 @@ export function Hero() {
           <span className="hero__kicker">domine a waldman</span>
           <span className="hero__word">matrix</span>
         </h1>
-        <p className="hero__lead">
+        <p className="hero__lead hero__lead--ghost" aria-hidden="true">
           Curso gratuito em vídeo para operar as mesas digitais Matrix 20 e Matrix 26, com
           certificado ao final.
         </p>
@@ -39,6 +40,6 @@ export function Hero() {
         </a>
         <p className="hero__tags hero__tags--end">Gratuito</p>
       </div>
-    </section>
+    </HeroScrollVideo>
   );
 }

@@ -1,8 +1,10 @@
 ﻿import "./landing.css";
-import { CourseFader } from "@/components/landing/course-fader";
+import { Component as CursorFollower } from "@/components/ui/cursor-follower";
+import { CourseConsole } from "@/components/landing/course-console";
 import { Faq } from "@/components/landing/faq";
 import { Hero } from "@/components/landing/hero";
 import { Instructor } from "@/components/landing/instructor";
+import { PassoAPasso } from "@/components/landing/passo-a-passo";
 import { SiteFooter } from "@/components/landing/site-footer";
 import { SiteNav } from "@/components/landing/site-nav";
 import { Reveal } from "@/components/landing/reveal";
@@ -13,9 +15,11 @@ import { WatchSection } from "@/components/landing/watch-section";
 export default function Home() {
   return (
     <>
+      <CursorFollower />
       <SiteNav />
       <Hero />
-      <CourseFader />
+      <CourseConsole />
+      <PassoAPasso />
       <Reveal>
         <WatchSection />
       </Reveal>
