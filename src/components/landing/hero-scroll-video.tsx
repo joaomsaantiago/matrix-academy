@@ -10,8 +10,18 @@ const frameUrl = (i: number) => `/hero-frames/f${String(i + 1).padStart(4, "0")}
 const KEEP_BEHIND = 6;
 const KEEP_AHEAD = 14;
 const FETCH_CONCURRENCY = 6;
+/**
+ * Como o texto da capa sai quando a rolagem começa:
+ *  - "zoom": o texto cresce e vem para frente até passar da tela (versão atual);
+ *  - "rise": o texto sobe um pouco e some (versão original; para voltar, troque aqui).
+ */
+const COPY_MOTION: "zoom" | "rise" = "zoom";
+/** Trecho inicial da rolagem (0 a 1) em que o texto sai de cena. */
+const COPY_SPAN = COPY_MOTION === "zoom" ? 0.3 : 0.22;
+/** Constante de tempo da roda do mouse suavizada (só dentro da capa): maior = mais macio. */
+const WHEEL_SECONDS = 0.14;
 /** Constante de tempo da suavização: maior = mais macio (e com mais atraso). */
-const SMOOTH_SECONDS = 0.11;
+const SMOOTH_SECONDS = 0.15;
 
 /**
  * Animação da capa controlada pela rolagem. A seção externa é alta e o palco fica
@@ -158,6 +168,12 @@ export function HeroScrollVideo({ children }: { children: React.ReactNode }) {
         last = 0;
       }
 
+      // o texto da capa sai de cena nos primeiros COPY_SPAN da rolagem, no mesmo ritmo suavizado do vídeo
+      const copy = Math.max(0, 1 - current / COPY_SPAN);
+      stageEl.style.setProperty("--copy", copy.toFixed(4));
+      stageEl.dataset.copy = copy < 0.02 ? "0" : "1";
+      stageEl.style.setProperty("--p", current.toFixed(4));
+
       const want = Math.min(n - 1, Math.max(0, Math.round(current * (n - 1))));
       refreshWindow(want);
       const use = nearestReady(want);
@@ -179,11 +195,6 @@ export function HeroScrollVideo({ children }: { children: React.ReactNode }) {
       // a última tela de rolagem é da cortina: a próxima seção sobe por cima da capa
       const span = rect.height - window.innerHeight * 2;
       target = span > 0 ? Math.min(1, Math.max(0, -rect.top / span)) : 0;
-      // texto da capa some nos primeiros ~22% da rolagem; a própria sequência assume
-      const copy = Math.max(0, 1 - target / 0.22);
-      stageEl.style.setProperty("--copy", String(copy));
-      stageEl.dataset.copy = copy < 0.02 ? "0" : "1";
-      stageEl.style.setProperty("--p", target.toFixed(4));
       // quanto da capa já está coberto (0 a 1), para escurecê-la enquanto a seção sobe
       const next = wrapEl.nextElementSibling;
       const cover = next ? 1 - next.getBoundingClientRect().top / window.innerHeight : 0;
@@ -192,6 +203,49 @@ export function HeroScrollVideo({ children }: { children: React.ReactNode }) {
     };
     measure();
     current = target;
+    request();
+
+    // ---------- roda do mouse suave, só dentro da capa ----------
+    // A roda normalmente salta em degraus. Aqui acumulamos o movimento e rolamos a página em
+    // direção a ele com suavização. Fora da capa (e no celular, sem roda) a rolagem é a nativa.
+    let wheelTarget = 0;
+    let wheelPos = 0;
+    let wheelRaf = 0;
+    let wheelLast = 0;
+    const zoneEnd = () => wrapEl.offsetTop + wrapEl.offsetHeight - window.innerHeight;
+    const wheelStep = (now: number) => {
+      const dt = wheelLast ? Math.min(0.1, (now - wheelLast) / 1000) : 0.016;
+      wheelLast = now;
+      // alguém rolou por outro meio (teclado, barra, âncora): abandona a animação
+      if (Math.abs(window.scrollY - wheelPos) > 3) {
+        wheelRaf = 0;
+        return;
+      }
+      wheelPos += (wheelTarget - wheelPos) * (1 - Math.exp(-dt / WHEEL_SECONDS));
+      if (Math.abs(wheelTarget - wheelPos) < 0.4) wheelPos = wheelTarget;
+      window.scrollTo({ top: wheelPos, behavior: "instant" });
+      if (wheelPos !== wheelTarget) wheelRaf = requestAnimationFrame(wheelStep);
+      else wheelRaf = 0;
+    };
+    const onWheel = (e: WheelEvent) => {
+      if (reduced || e.ctrlKey || e.defaultPrevented) return;
+      const end = zoneEnd();
+      const y = window.scrollY;
+      // fora da capa, ou saindo dela para baixo: rolagem nativa
+      if (y >= end && e.deltaY > 0) return;
+      if (y > end) return;
+      const unit = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? window.innerHeight : 1;
+      const delta = e.deltaY * unit;
+      e.preventDefault();
+      if (!wheelRaf) {
+        wheelPos = y;
+        wheelTarget = y;
+        wheelLast = 0;
+      }
+      wheelTarget = Math.min(end, Math.max(0, wheelTarget + delta));
+      if (!wheelRaf) wheelRaf = requestAnimationFrame(wheelStep);
+    };
+    window.addEventListener("wheel", onWheel, { passive: false });
 
     window.addEventListener("scroll", measure, { passive: true });
     window.addEventListener("resize", measure);
@@ -203,13 +257,15 @@ export function HeroScrollVideo({ children }: { children: React.ReactNode }) {
       cancelAnimationFrame(raf);
       window.removeEventListener("scroll", measure);
       window.removeEventListener("resize", measure);
+      window.removeEventListener("wheel", onWheel);
+      cancelAnimationFrame(wheelRaf);
       bitmaps.forEach((b) => b?.close());
     };
   }, []);
 
   return (
     <section ref={wrap} className="hero-scroll" aria-label="Apresentação">
-      <div ref={stage} className="hero hero--video">
+      <div ref={stage} className="hero hero--video" data-motion={COPY_MOTION}>
         <canvas ref={canvas} className="hero__video" aria-hidden="true" />
         <div className="hero__shade" aria-hidden="true" />
         {children}

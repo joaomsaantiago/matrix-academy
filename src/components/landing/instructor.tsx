@@ -10,7 +10,7 @@ export function Instructor() {
           <path d="M6 11.5V16c0 1.4 2.7 3 6 3s6-1.6 6-3v-4.5" />
           <path d="M22 9v6" />
         </svg>
-        o seu professor
+        professor
       </h2>
 
       <div className="teacher__grid">
