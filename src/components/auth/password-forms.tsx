@@ -6,7 +6,7 @@ import {
   resetPassword,
   type FormState,
 } from "@/app/(auth)/actions";
-import { Field, FormMessage, SubmitButton } from "./form-parts";
+import { Field, FormMessage, PasswordField, SubmitButton } from "./form-parts";
 
 export function ForgotPasswordForm() {
   const [state, action] = useActionState<FormState, FormData>(
@@ -19,7 +19,7 @@ export function ForgotPasswordForm() {
   }
 
   return (
-    <form action={action} className="flex flex-col gap-5" noValidate>
+    <form action={action} className="auth-form" noValidate>
       <FormMessage error={state.error} />
       <Field
         label="E-mail"
@@ -42,12 +42,10 @@ export function ResetPasswordForm() {
   );
 
   return (
-    <form action={action} className="flex flex-col gap-5" noValidate>
+    <form action={action} className="auth-form" noValidate>
       <FormMessage error={state.error} />
-      <Field
+      <PasswordField
         label="Nova senha"
-        name="password"
-        type="password"
         autoComplete="new-password"
         error={state.fieldErrors?.password}
         hint="Mínimo de 8 caracteres."

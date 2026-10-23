@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { PROFESSIONS } from "./professions";
 
 /** Remove tudo que nao for digito. */
 export function onlyDigits(value: string) {
@@ -14,16 +15,17 @@ export function isValidBrazilianPhone(value: string) {
 }
 
 export const signUpSchema = z.object({
-  fullName: z
-    .string()
-    .trim()
-    .min(5, "Informe seu nome completo.")
-    .refine((v) => v.split(/\s+/).length >= 2, "Informe nome e sobrenome."),
+  firstName: z.string().trim().min(2, "Informe seu nome."),
+  lastName: z.string().trim().min(2, "Informe seu sobrenome."),
   email: z.string().trim().toLowerCase().email("Informe um e-mail válido."),
   phone: z
     .string()
-    .refine(isValidBrazilianPhone, "Informe um telefone com DDD, ex.: (11) 98765-4321."),
+    .refine(isValidBrazilianPhone, "Informe um telefone com DDD."),
   password: z.string().min(8, "A senha precisa ter ao menos 8 caracteres."),
+  profession: z.enum(Object.keys(PROFESSIONS) as [keyof typeof PROFESSIONS], {
+    message: "Escolha sua profissão.",
+  }),
+  hasMatrix: z.enum(["sim", "nao"], { message: "Escolha Sim ou Não." }),
 });
 
 export const signInSchema = z.object({

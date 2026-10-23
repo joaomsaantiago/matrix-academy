@@ -2,7 +2,8 @@
 
 import { useActionState, useState } from "react";
 import { signUp, type FormState } from "@/app/(auth)/actions";
-import { Field, FormMessage, SubmitButton } from "./form-parts";
+import { Field, FormMessage, PasswordField, SubmitButton } from "./form-parts";
+import { ProfessionSelect } from "./profession-select";
 
 /** (11) 98765-4321 */
 function formatPhone(value: string) {
@@ -21,58 +22,109 @@ export function SignUpForm() {
     return <FormMessage message={state.message} />;
   }
 
+  const hasMatrixError = state.fieldErrors?.hasMatrix;
+
   return (
-    <form action={action} className="flex flex-col gap-5" noValidate>
+    <form action={action} className="auth-form" noValidate>
       <FormMessage error={state.error} />
-      <Field
-        label="Nome completo"
-        name="fullName"
-        autoComplete="name"
-        defaultValue={state.values?.fullName}
-        error={state.fieldErrors?.fullName}
-        hint="Este nome aparece no seu certificado."
-      />
-      <Field
-        label="E-mail"
-        name="email"
-        type="email"
-        autoComplete="email"
-        inputMode="email"
-        defaultValue={state.values?.email}
-        error={state.fieldErrors?.email}
-      />
-      <div>
-        <label htmlFor="field-phone" className="mb-2 block text-sm font-medium">
-          Telefone
-        </label>
-        <input
-          id="field-phone"
-          name="phone"
-          type="tel"
-          inputMode="tel"
-          autoComplete="tel-national"
-          placeholder="(11) 98765-4321"
-          value={phone}
-          onChange={(e) => setPhone(formatPhone(e.target.value))}
-          aria-invalid={state.fieldErrors?.phone ? true : undefined}
-          aria-describedby={state.fieldErrors?.phone ? "field-phone-error" : undefined}
-          className="h-14 w-full rounded-full bg-surface px-6 text-base text-ink placeholder:text-ink-soft/70 aria-invalid:bg-danger/10"
+
+      <div className="auth-grid2">
+        <ProfessionSelect
+          defaultValue={state.values?.profession}
+          error={state.fieldErrors?.profession}
         />
-        {state.fieldErrors?.phone ? (
-          <p id="field-phone-error" className="mt-2 text-sm text-danger">
-            {state.fieldErrors.phone}
-          </p>
-        ) : null}
+        <fieldset
+          className="auth-choice"
+          aria-describedby={hasMatrixError ? "field-hasMatrix-error" : undefined}
+        >
+          <legend className="auth-label">Já possui a mesa Matrix?</legend>
+          <div className="auth-choice__row">
+            <label>
+              <input
+                type="radio"
+                name="hasMatrix"
+                value="sim"
+                defaultChecked={state.values?.hasMatrix === "sim"}
+              />
+              Sim
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="hasMatrix"
+                value="nao"
+                defaultChecked={state.values?.hasMatrix === "nao"}
+              />
+              Não
+            </label>
+          </div>
+          {hasMatrixError ? (
+            <p id="field-hasMatrix-error" className="auth-error">
+              {hasMatrixError}
+            </p>
+          ) : null}
+        </fieldset>
       </div>
-      <Field
-        label="Senha"
-        name="password"
-        type="password"
+
+      <div className="auth-grid2">
+        <Field
+          label="Nome"
+          name="firstName"
+          autoComplete="given-name"
+          defaultValue={state.values?.firstName}
+          error={state.fieldErrors?.firstName}
+        />
+        <Field
+          label="Sobrenome"
+          name="lastName"
+          autoComplete="family-name"
+          defaultValue={state.values?.lastName}
+          error={state.fieldErrors?.lastName}
+        />
+      </div>
+
+      <div className="auth-grid2">
+        <Field
+          label="E-mail"
+          name="email"
+          type="email"
+          autoComplete="email"
+          inputMode="email"
+          defaultValue={state.values?.email}
+          error={state.fieldErrors?.email}
+        />
+        <div>
+          <label htmlFor="field-phone" className="auth-label">
+            Telefone
+          </label>
+          <input
+            id="field-phone"
+            name="phone"
+            type="tel"
+            inputMode="tel"
+            autoComplete="tel-national"
+            placeholder="(11) 98765-4321"
+            value={phone}
+            onChange={(e) => setPhone(formatPhone(e.target.value))}
+            aria-invalid={state.fieldErrors?.phone ? true : undefined}
+            aria-describedby={state.fieldErrors?.phone ? "field-phone-error" : undefined}
+            className="auth-input"
+          />
+          {state.fieldErrors?.phone ? (
+            <p id="field-phone-error" className="auth-error">
+              {state.fieldErrors.phone}
+            </p>
+          ) : null}
+        </div>
+      </div>
+
+      <PasswordField
         autoComplete="new-password"
         error={state.fieldErrors?.password}
-        hint="Mínimo de 8 caracteres."
+        placeholder="Mínimo de 8 caracteres"
       />
-      <SubmitButton>Criar minha conta</SubmitButton>
+
+      <SubmitButton>Criar conta grátis</SubmitButton>
     </form>
   );
 }

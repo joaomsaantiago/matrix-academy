@@ -1,30 +1,48 @@
 import Link from "next/link";
 
+/** Página de conta: formulário à esquerda e, à direita, um quadro da capa com a chamada do curso. */
 export function AuthShell({
   title,
   intro,
   children,
   footer,
+  wide,
 }: {
   title: string;
   intro?: string;
   children: React.ReactNode;
   footer?: React.ReactNode;
+  /** formulário mais largo (cadastro: campos em duas colunas) */
+  wide?: boolean;
 }) {
   return (
-    <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-6 py-16">
-      <Link
-        href="/"
-        className="mb-12 w-fit font-[family-name:var(--font-brand)] text-xl font-black uppercase tracking-[0.06em] text-ink"
-      >
-        Matrix Academy
-      </Link>
-      <h1 className="text-4xl font-semibold leading-tight tracking-tight">
-        {title}
-      </h1>
-      {intro ? <p className="mt-3 text-ink-soft">{intro}</p> : null}
-      <div className="mt-8">{children}</div>
-      {footer ? <div className="mt-8 text-sm text-ink-soft">{footer}</div> : null}
+    <main className="authp">
+      <div className="authp__main">
+        <div className="authp__top">
+          <Link href="/" className="authp__brand">
+            Matrix Academy
+          </Link>
+        </div>
+
+        <section className={`authp__form${wide ? " authp__form--wide" : ""}`} aria-labelledby="auth-title">
+          <h1 id="auth-title" className="authp__title">
+            {title}
+          </h1>
+          {intro ? <p className="authp__intro">{intro}</p> : null}
+          <div className="authp__body">{children}</div>
+          {footer ? <footer className="authp__foot">{footer}</footer> : null}
+        </section>
+      </div>
+
+      <aside className="authp__art" aria-hidden="true">
+        <p className="authp__kicker">Curso gratuito</p>
+        <p className="authp__headline">Domine a Waldman Matrix</p>
+        <ul className="authp__points">
+          <li>Aulas em vídeo, no seu ritmo</li>
+          <li>Matrix 20 e Matrix 26</li>
+          <li>Certificado ao concluir</li>
+        </ul>
+      </aside>
     </main>
   );
 }

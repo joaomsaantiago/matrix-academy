@@ -48,26 +48,43 @@ export async function signUp(
   formData: FormData,
 ): Promise<FormState> {
   const raw = {
-    fullName: str(formData, "fullName"),
+    firstName: str(formData, "firstName"),
+    lastName: str(formData, "lastName"),
     email: str(formData, "email"),
     phone: str(formData, "phone"),
     password: str(formData, "password"),
+    profession: str(formData, "profession"),
+    hasMatrix: str(formData, "hasMatrix"),
   };
   // nunca devolvemos a senha para o navegador
-  const values = { fullName: raw.fullName, email: raw.email, phone: raw.phone };
+  const values = {
+    firstName: raw.firstName,
+    lastName: raw.lastName,
+    email: raw.email,
+    phone: raw.phone,
+    profession: raw.profession,
+    hasMatrix: raw.hasMatrix,
+  };
 
   const parsed = signUpSchema.safeParse(raw);
   if (!parsed.success) {
     return { fieldErrors: fieldErrorsOf(parsed.error.issues), values };
   }
 
-  const { fullName, email, phone, password } = parsed.data;
+  const { firstName, lastName, email, phone, password, profession, hasMatrix } =
+    parsed.data;
+  const fullName = `${firstName} ${lastName}`.replace(/\s+/g, " ");
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
-      data: { full_name: fullName, phone: onlyDigits(phone) },
+      data: {
+        full_name: fullName,
+        phone: onlyDigits(phone),
+        profession,
+        has_matrix: hasMatrix === "sim",
+      },
       emailRedirectTo: `${await siteUrl()}/auth/callback?next=/membros`,
     },
   });

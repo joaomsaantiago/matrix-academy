@@ -27,7 +27,7 @@ export default function EntrarPage({
       footer={
         <>
           Ainda não tem conta?{" "}
-          <Link href="/cadastro" className="text-ink underline underline-offset-4">
+          <Link href="/cadastro">
             Cadastre-se grátis
           </Link>
         </>
