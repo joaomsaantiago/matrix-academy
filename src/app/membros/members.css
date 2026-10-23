@@ -354,3 +354,172 @@
     animation: none;
   }
 }
+
+/* ---------- cards dos módulos ---------- */
+.mods {
+  position: relative;
+  padding: 0 clamp(24px, 5vw, 72px) clamp(72px, 10vw, 120px);
+}
+.mods__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px 24px;
+  margin-bottom: clamp(18px, 2.4vw, 28px);
+}
+.mods__title {
+  font-size: clamp(1.4rem, 2.2vw, 2rem);
+  line-height: 1;
+}
+.mods__count {
+  font-size: var(--step-small);
+  color: var(--ink-soft);
+}
+.mods__grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(14px, 1.6vw, 22px);
+}
+.mcard {
+  position: relative;
+  isolation: isolate;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 18px;
+  background: #0b0e11;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.3s ease;
+  animation: mcard-in 0.6s cubic-bezier(0.23, 1, 0.32, 1) both;
+  animation-delay: calc(var(--i, 0) * 60ms);
+}
+@keyframes mcard-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+.mcard:hover,
+.mcard:focus-visible {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: inset 0 0 0 1px rgba(74, 168, 216, 0.55), 0 22px 50px rgba(0, 0, 0, 0.55); /* taste-skill-ignore */
+  outline: none;
+}
+.mcard__img {
+  z-index: -2;
+  object-fit: cover;
+  transition: filter 0.4s ease;
+}
+/* esmaece as bordas da foto (o fundo dela é branco) e escurece embaixo para o texto ler bem */
+.mcard::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  box-shadow: inset 0 0 36px 22px #0b0e11; /* taste-skill-ignore */
+  background: linear-gradient(0deg, rgba(8, 10, 12, 0.92) 0%, rgba(8, 10, 12, 0.1) 60%);
+  transition: background-color 0.4s ease;
+}
+.mcard:hover .mcard__img,
+.mcard:focus-visible .mcard__img {
+  filter: brightness(0.55);
+}
+
+/* nome e quantidade de aulas: só no hover (ou foco) */
+.mcard__info {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 52px;
+  display: grid;
+  gap: 4px;
+  padding: 0 16px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease, transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.mcard:hover .mcard__info,
+.mcard:focus-visible .mcard__info {
+  opacity: 1;
+  transform: none;
+}
+.mcard__name {
+  font-size: 1.2rem;
+  line-height: 1.1;
+}
+.mcard__meta {
+  font-size: 0.8125rem;
+  color: #d3d8dc;
+}
+
+/* número e barra de progresso: sempre à vista */
+.mcard__foot {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px 14px;
+}
+.mcard__no {
+  flex: none;
+  font-family: var(--font-brand), system-ui, sans-serif;
+  font-weight: 900;
+  font-size: 1.5rem;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.7); /* taste-skill-ignore */
+}
+.mcard__bar {
+  flex: 1;
+  display: block;
+  height: 5px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.22);
+  overflow: hidden;
+}
+.mcard__bar span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+}
+/* sem mouse (celular e tablet): o nome fica sempre visível, senão ninguém o veria */
+@media (hover: none) {
+  .mcard__info {
+    opacity: 1;
+    transform: none;
+  }
+}
+.mods__note {
+  margin-top: 20px;
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+}
+
+@media (max-width: 1279px) {
+  .mods__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 899px) {
+  .mods__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 519px) {
+  .mods__grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mcard {
+    animation: none;
+    transition: none;
+  }
+}
