@@ -90,11 +90,17 @@ export async function signUp(
   });
 
   if (error) {
+    // o motivo real fica no log do servidor (sem dados pessoais); a pessoa vê uma frase simples
+    console.error("signUp falhou:", error.status, error.code, error.message);
     const alreadyUsed = /already|registered|exists/i.test(error.message);
+    const rateLimited =
+      error.status === 429 || error.code === "over_email_send_rate_limit";
     return {
       error: alreadyUsed
         ? "Este e-mail já tem cadastro. Tente entrar."
-        : "Não foi possível criar a conta agora. Tente novamente em instantes.",
+        : rateLimited
+          ? "Muitos cadastros em pouco tempo. Aguarde alguns minutos e tente de novo."
+          : "Não foi possível criar a conta agora. Tente novamente em instantes.",
       values,
     };
   }
