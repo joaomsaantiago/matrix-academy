@@ -110,6 +110,12 @@
   gap: 6px;
   margin-top: 28px;
 }
+.mnav__admin {
+  margin-top: auto;
+}
+.mnav__admin + .mnav__bottom {
+  margin-top: 6px;
+}
 .mnav__bottom {
   margin-top: auto;
 }

@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { MemberNav } from "@/components/members/member-nav";
+import { getCurrentRole } from "@/lib/admin/auth";
 import { createClient } from "@/lib/supabase/server";
 import "./members.css";
 
@@ -20,8 +21,11 @@ async function NavLoader() {
     .eq("id", auth.user!.id)
     .single();
   const name = profile?.full_name ?? "Aluno";
+  const current = await getCurrentRole();
   return (
-    <MemberNav name={name} email={auth.user?.email ?? ""} initials={initialsOf(name)} />
+    <MemberNav name={name} email={auth.user?.email ?? ""} initials={initialsOf(name)}
+      isAdmin={current?.role === "admin"}
+    />
   );
 }
 

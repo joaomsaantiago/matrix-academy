@@ -5,7 +5,7 @@ const AUTH_ONLY_PAGES = ["/entrar", "/cadastro"];
 
 /**
  * Renova a sessao do Supabase a cada requisicao e aplica as regras de acesso:
- *  - /membros exige login;
+ *  - /membros e /admin exigem login (o papel de admin é conferido no servidor, em cada página e ação);
  *  - quem ja esta logado nao precisa ver /entrar nem /cadastro.
  */
 export async function updateSession(request: NextRequest) {
@@ -47,7 +47,7 @@ export async function updateSession(request: NextRequest) {
     return redirect;
   };
 
-  if (!isLoggedIn && pathname.startsWith("/membros")) {
+  if (!isLoggedIn && (pathname.startsWith("/membros") || pathname.startsWith("/admin"))) {
     return redirectTo("/entrar");
   }
   if (isLoggedIn && AUTH_ONLY_PAGES.includes(pathname)) {

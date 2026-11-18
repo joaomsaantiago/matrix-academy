@@ -73,10 +73,13 @@ export function MemberNav({
   name,
   email,
   initials,
+  isAdmin = false,
 }: {
   name: string;
   email: string;
   initials: string;
+  /** só admins veem o atalho do painel; a proteção de verdade está no servidor */
+  isAdmin?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const root = useRef<HTMLElement>(null);
@@ -160,6 +163,18 @@ export function MemberNav({
             );
           })}
         </nav>
+
+        {isAdmin ? (
+          <a href="/admin" className="mnav__item mnav__admin" title={open ? undefined : "Painel admin"}>
+            <span className="mnav__icon">
+              <svg {...svg}>
+                <path d="M12 3 4.5 6v5.5c0 4.4 3.1 8.2 7.5 9.5 4.4-1.3 7.5-5.1 7.5-9.5V6z" />
+                <path d="m9 12 2.2 2.2L15.5 10" />
+              </svg>
+            </span>
+            <span className="mnav__label">Painel admin</span>
+          </a>
+        ) : null}
 
         <form action={signOut} className="mnav__bottom">
           <button
