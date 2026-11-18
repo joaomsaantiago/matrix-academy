@@ -1,8 +1,9 @@
 import Image from "next/image";
 import type { ModuleCard } from "@/lib/modules";
+import { GlowList } from "./glow-list";
 
 /** A foto da mesa é retrato (1200x1450): fração da altura que aparece num cartão 16:10. */
-const BAND = 10 / 16 / (1450 / 1200);
+const BAND = Math.min(0.99, 4 / 3 / (1450 / 1200));
 
 /** Os cards dos módulos do curso, logo abaixo do destaque. */
 export function ModuleCards({
@@ -27,7 +28,7 @@ export function ModuleCards({
         </p>
       </header>
 
-      <ul className="mods__grid">
+      <GlowList className="mods__grid">
         {modules.map((m, i) => {
           const py = Math.min(100, Math.max(0, ((m.focus.y / 100 - BAND / 2) / (1 - BAND)) * 100));
           const percent = m.lessons ? Math.round((m.completed / m.lessons) * 100) : 0;
@@ -81,7 +82,7 @@ export function ModuleCards({
             </li>
           );
         })}
-      </ul>
+      </GlowList>
 
       {isSample ? (
         <p className="mods__note">Exemplo: os módulos reais aparecem aqui quando forem publicados.</p>
